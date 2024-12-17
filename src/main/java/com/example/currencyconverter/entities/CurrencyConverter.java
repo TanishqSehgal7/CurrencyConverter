@@ -1,11 +1,9 @@
 package com.example.currencyconverter.entities;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CurrenyConverter {
+public class CurrencyConverter extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,5 +35,4 @@ public class CurrenyConverter {
 
     @Column(name = "created_by", nullable = false)
     private String createdBy;
-
 }
