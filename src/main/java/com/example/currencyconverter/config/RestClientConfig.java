@@ -21,6 +21,7 @@ public class RestClientConfig {
     @Qualifier("currencyConverterClient")
     RestClient getCurrencyConverterRestClient() {
         return RestClient.builder()
+                .baseUrl(BASE_URL)
                 .defaultHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .defaultStatusHandler(HttpStatusCode::is5xxServerError, ((request, response) -> {
                     throw new RuntimeException("Internal Server Error");

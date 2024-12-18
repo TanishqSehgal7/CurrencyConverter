@@ -9,7 +9,7 @@ public class CurrencyConverterResponse {
 
     private LocalDateTime timeStamp;
 
-    @JsonProperty("Currency_Conversion")
+    @JsonProperty("Currency_Conversion_Data")
     private CurrencyConverterDto currencyConverterDto;
 
     private ApiError apiError;

@@ -25,5 +25,6 @@ public class AuditableEntity {
     private LocalDateTime createdDate;
 
     @CreatedBy
-    private LocalDateTime createdBy;
+    private String createdBy;
+
 }

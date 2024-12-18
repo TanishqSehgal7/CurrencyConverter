@@ -13,26 +13,12 @@ import java.time.LocalDateTime;
 @Setter
 public class ApiError {
 
-    private LocalDateTime timeStamp;
-
     private String message;
     private HttpStatus statusCode;
-
-    public ApiError() {
-        this.timeStamp = LocalDateTime.now();
-    }
 
     public ApiError(String message, HttpStatus statusCode) {
         this.message = message;
         this.statusCode = statusCode;
-    }
-
-    public LocalDateTime getTimeStamp() {
-        return timeStamp;
-    }
-
-    public void setTimeStamp(LocalDateTime timeStamp) {
-        this.timeStamp = timeStamp;
     }
 
     public String getMessage() {

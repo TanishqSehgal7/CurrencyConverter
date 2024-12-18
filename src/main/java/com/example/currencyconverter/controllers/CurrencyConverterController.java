@@ -1,9 +1,11 @@
 package com.example.currencyconverter.controllers;
 
 import com.example.currencyconverter.advices.CurrencyConverterResponse;
+import com.example.currencyconverter.advices.InvalidParameterException;
 import com.example.currencyconverter.advices.ResourceNotFoundException;
 import com.example.currencyconverter.services.CurrencyConverterClientServiceImplementation;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,15 +22,15 @@ public class CurrencyConverterController {
 
     @GetMapping()
     public ResponseEntity<CurrencyConverterResponse> convertCurrency(
-            @RequestParam(required = true, name = "fromCurrency") String fromCurrency,
-            @RequestParam(required = true, name = "toCurrency") String toCurrency,
+            @RequestParam(required = true, name = "fromCurrency", defaultValue = "USD") String fromCurrency,
+            @RequestParam(required = true, name = "toCurrency", defaultValue = "INR") String toCurrency,
             @RequestParam(required = false, name = "units", defaultValue = "1") int units) {
 
         if(fromCurrency!=null && toCurrency!=null) {
             return ResponseEntity.ok(currencyConverterClientServiceImplementation
                     .getTotalCostFromOneUnitToAnother(fromCurrency, toCurrency, units));
         } else {
-            return ResponseEntity.badRequest().build();
+            throw new InvalidParameterException("fromCurrency and toCurrency cannot be null");
         }
     }
 

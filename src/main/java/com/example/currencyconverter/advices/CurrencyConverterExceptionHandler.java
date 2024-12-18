@@ -9,16 +9,21 @@ public class CurrencyConverterExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     ResponseEntity<CurrencyConverterResponse> handleResourceNotFoundException(ResourceNotFoundException exception) {
-        ApiError apiError = new ApiError(exception.getLocalizedMessage(), HttpStatus.NOT_FOUND);
+        ApiError apiError = new ApiError(exception.getMessage(), HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(new CurrencyConverterResponse(apiError), apiError.getStatusCode());
     }
 
     @ExceptionHandler(RuntimeException.class)
     ResponseEntity<CurrencyConverterResponse> handleException(RuntimeException exception) {
-        ApiError apiError = new ApiError(exception.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        ApiError apiError = new ApiError(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 
         return new ResponseEntity<>(new CurrencyConverterResponse(apiError), apiError.getStatusCode());
     }
 
+    @ExceptionHandler(InvalidParameterException.class)
+    ResponseEntity<CurrencyConverterResponse> handleInvalidParameterException(RuntimeException exception) {
+        ApiError apiError = new ApiError(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new CurrencyConverterResponse(apiError), apiError.getStatusCode());
+    }
 
 }
