@@ -1,6 +1,10 @@
 package com.example.currencyconverter.entities;
 import jakarta.persistence.*;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
@@ -9,29 +13,41 @@ import java.time.LocalDateTime;
 //@Getter
 //@Setter
 //@NoArgsConstructor
+//@AllArgsConstructor
 public class CurrencyConverter extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
-    @Column(name = "from_currency", nullable=false)
     private String fromCurrency;
 
-    @Column(name = "to_currency", nullable = false)
     private String toCurrency;
 
-    @Column(name = "units", nullable = false)
     private int units;
 
-    @Column(name = "total_cost", nullable = false)
     private double totalCost;
 
-    @Column(name = "created_date", nullable = false)
+    @CreatedDate
     private LocalDateTime createdDate;
 
-    @Column(name = "created_by", nullable = false)
+    @CreatedBy
     private String createdBy;
+
+    @PrePersist
+    void beforeSave() {
+
+    }
+
+    @PreUpdate
+    void beforeUpdate() {
+
+    }
+
+    @PreRemove
+    void beforeDelete() {
+
+    }
 
     public Long getId() {
         return id;

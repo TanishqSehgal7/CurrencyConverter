@@ -1,4 +1,5 @@
 package com.example.currencyconverter.dto;
+import lombok.*;
 
 
 public class CurrencyConverterDto {

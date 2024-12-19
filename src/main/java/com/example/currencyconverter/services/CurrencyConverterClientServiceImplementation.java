@@ -1,5 +1,6 @@
 package com.example.currencyconverter.services;
 
+import com.example.currencyconverter.advices.ApiError;
 import com.example.currencyconverter.advices.CurrencyConverterResponse;
 import com.example.currencyconverter.advices.InvalidParameterException;
 import com.example.currencyconverter.advices.ResourceNotFoundException;
@@ -12,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -40,7 +42,7 @@ public class CurrencyConverterClientServiceImplementation implements CurrencyCon
     public Map<String,Double> getRestClientResponse() {
 
         try {
-            System.out.println("Inside Try Block");
+            logger.debug("Inside Try Block");
             CurrencyRateEntity exchangeRate = restClient.get()
                     .uri("")
                     .retrieve()
@@ -51,8 +53,8 @@ public class CurrencyConverterClientServiceImplementation implements CurrencyCon
                         throw new RuntimeException("Server Error while fetching exchange rates!");
                     })
                     .body(CurrencyRateEntity.class);
-            System.out.println("Response received from API: " + exchangeRate);
-            System.out.println("Exchange Rates: " + exchangeRate.getExchangeRates());
+            logger.debug("Response received from API: " + exchangeRate);
+            logger.debug("Exchange Rates: " + exchangeRate.getExchangeRates());
             return exchangeRate.getExchangeRates();
         } catch (Exception e) {
             throw new RuntimeException(e.getLocalizedMessage());
@@ -68,11 +70,6 @@ public class CurrencyConverterClientServiceImplementation implements CurrencyCon
             Double fromCurrencyRate = exchangeRates.getOrDefault(fromCurrency,1.0);
             Double toCurrencyRate = exchangeRates.getOrDefault(toCurrency, 1.0);
 
-            System.out.println("From Currency: " + fromCurrency);
-            System.out.println("From Currency Rate: " + fromCurrencyRate);
-            System.out.println("To Currency: " + toCurrency);
-            System.out.println("To Currency Rate: " + toCurrencyRate);
-
             Double totalCost = (units/fromCurrencyRate) * toCurrencyRate;
             totalCost = Math.round(totalCost*100.0)/100.0;
 
@@ -84,15 +81,19 @@ public class CurrencyConverterClientServiceImplementation implements CurrencyCon
             currencyConverterDto.setToCurrency(toCurrency);
             currencyConverterDto.setUnits(units);
             currencyConverterDto.setTotalCost(totalCost);
+
+            logger.debug("CurrencyConverterDto is:\n" +
+                    "From: " + currencyConverterDto.getFromCurrency() + "\n" +
+                    "To: " + currencyConverterDto.getToCurrency() + "\n" +
+                    "Units: " + currencyConverterDto.getUnits() + "\n" +
+                    "TotalCost: " + currencyConverterDto.getTotalCost());
+
+            ApiError apiError = new ApiError("Record Saved in DB", HttpStatus.ACCEPTED);
+
+            response.setApiError(apiError);
             response.setCurrencyConverterDto(currencyConverterDto);
 
-            CurrencyConverter currencyConverter = new CurrencyConverter();
-            currencyConverter.setFromCurrency(fromCurrency);
-            currencyConverter.setToCurrency(toCurrency);
-            currencyConverter.setUnits(units);
-            currencyConverter.setTotalCost(totalCost);
-
-            currencyConverterRepository.save(currencyConverter);
+            currencyConverterRepository.save(modelMapper.map(currencyConverterDto, CurrencyConverter.class));
 
             return response;
         } else {
